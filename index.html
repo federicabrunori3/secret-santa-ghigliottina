@@ -61,16 +61,34 @@
 
     .timer {
       grid-column: 1 / -1;
-      text-align: center;
-      font-size: 4rem;
-      font-weight: 900;
-      color: #f5c542;
-      margin-bottom: 20px;
-      user-select: none;
-      display: none;
+      justify-self: center;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-color: #f5c542;
+      color: white;
       font-family: 'Impact', Arial, sans-serif;
+      font-size: 5rem;
+      font-weight: 900;
+      display: none;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       letter-spacing: 6px;
-      text-shadow: none;
+      animation: pulseScale 1s infinite;
+      box-shadow: 0 0 15px #f5c542;
+    }
+
+    @keyframes pulseScale {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 0.7;
+      }
     }
 
     .game-area {
@@ -200,10 +218,10 @@
     .final-message {
       display: none;
       grid-column: 1 / -1;
-      background: #000;
+      background: #b71c1c;
       color: #fff;
-      padding: 24px;
-      border-radius: 12px;
+      padding: 28px 32px;
+      border-radius: 16px;
       font-size: 1.3rem;
       text-align: center;
       margin-top: 20px;
@@ -211,6 +229,32 @@
       position: relative;
       font-family: Arial, sans-serif;
       user-select: none;
+      box-shadow: 0 0 15px #a31515;
+    }
+
+    /* Agrifoglio angoli con SVG */
+    .final-message::before,
+    .final-message::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: url('data:image/svg+xml;utf8,<svg fill="%2300a230" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 0C14 18 0 64 0 64s18-14 32-32c14 18 32 32 32 32S50 18 32 0z"/></svg>') no-repeat center/contain;
+      opacity: 0.85;
+      pointer-events: none;
+      filter: drop-shadow(0 0 2px #006400);
+    }
+
+    .final-message::before {
+      top: -30px;
+      left: -30px;
+      transform: rotate(-15deg);
+    }
+
+    .final-message::after {
+      bottom: -30px;
+      right: -30px;
+      transform: rotate(20deg);
     }
 
     @keyframes flash {
@@ -315,7 +359,7 @@
 
         current++;
         if (current < questions.length) {
-          loadQuestion();
+          setTimeout(() => loadQuestion(), 2000);
         } else {
           startTimer();
         }
@@ -328,7 +372,7 @@
       guessBox.style.display = 'block';
 
       let time = 90;
-      timerEl.style.display = 'block';
+      timerEl.style.display = 'flex';
       timerEl.textContent = time;
 
       const interval = setInterval(() => {
@@ -350,7 +394,7 @@
       guessBox.style.display = 'none';
       timerEl.style.display = 'none';
       finalMessage.style.display = 'block';
-      finalMessage.innerHTML = `Un contributo pari a <strong>${money}€</strong> all'acquisto di 1 biglietto per i <strong>Campionati del Mondo di Ginnastica Acrobatica</strong> (17–26 settembre a Pesaro)!`;
+      finalMessage.innerHTML = `Un contributo pari a <strong>${money}€</strong> per l'acquisto di 1 biglietto per i Campionati del Mondo di Ginnastica Acrobatica (17-26 settembre a Pesaro) - quando sarà possibile comprarli! :D`;
     }
 
     loadQuestion();
