@@ -1,95 +1,266 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>La Ghigliottina – Secret Santa</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Ghigliottina – Secret Santa</title>
 
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: radial-gradient(circle at top, #0f4c81, #081f36);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-<style>
-body {
-margin: 0;
-min-height: 100vh;
-font-family: Arial, Helvetica, sans-serif;
-background: radial-gradient(circle at top, #0f4c81, #081f36);
-display: flex;
-justify-content: center;
-align-items: center;
-}
+    .container {
+      background: #ffffff;
+      width: 95%;
+      max-width: 1200px;
+      padding: 24px;
+      border-radius: 14px;
+      border: 6px solid #f5c542;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
 
+    h1 {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: 4px;
+      color: #0f4c81;
+    }
 
-.container {
-background: #ffffff;
-width: 95%;
-max-width: 1200px;
-padding: 24px;
-border-radius: 14px;
-border: 6px solid #f5c542;
-box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-display: grid;
-grid-template-columns: 2fr 1fr;
-gap: 24px;
-}
+    .game-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
+    .question {
+      background: linear-gradient(90deg, #f5c542, #f0b400);
+      padding: 18px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      text-align: center;
+      font-weight: bold;
+    }
 
-h1 {
-grid-column: 1 / -1;
-text-align: center;
-margin-bottom: 16px;
-letter-spacing: 4px;
-color: #0f4c81;
-}
+    .answers {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
 
+    .answer {
+      background: #0f4c81;
+      color: #ffffff;
+      padding: 18px;
+      border-radius: 10px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
 
-.game-area {
-display: flex;
-flex-direction: column;
-gap: 20px;
-}
+    .answer.correct { background: #3cb371; color: #000; }
+    .answer.wrong { background: #c0392b; }
 
+    .sidebar {
+      background: linear-gradient(180deg, #0f4c81, #0b2c4d);
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
 
-.question {
-background: linear-gradient(90deg, #f5c542, #f0b400);
-padding: 18px;
-border-radius: 10px;
-font-size: 1.2rem;
-text-align: center;
-font-weight: bold;
-}
+    .money {
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+    }
 
+    ul { list-style: none; padding: 0; margin: 0; }
 
-.answers {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 16px;
-}
+    li {
+      background: #f5c542;
+      color: #000;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      text-align: center;
+      font-weight: bold;
+    }
 
+    .timer {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-top: 12px;
+      display: none;
+    }
 
-.answer {
-background: #0f4c81;
-color: #ffffff;
-padding: 18px;
-border-radius: 10px;
-text-align: center;
-cursor: pointer;
-font-size: 1.1rem;
-font-weight: bold;
-}
+    .guess-box {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
 
+    .guess-box input {
+      padding: 12px;
+      width: 80%;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 2px solid #ccc;
+    }
 
-.answer.correct { background: #3cb371; color: #000; }
-.answer.wrong { background: #c0392b; }
+    .guess-box button {
+      margin-top: 12px;
+      padding: 14px 22px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #f5c542;
+    }
 
+    .final-message {
+      display: none;
+      grid-column: 1 / -1;
+      background: #000;
+      color: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      font-size: 1.3rem;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
 
-.sidebar {
-background: linear-gradient(180deg, #0f4c81, #0b2c4d);
-color: #ffffff;
-border-radius: 12px;
-padding: 18px;
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-}
+<body>
+  <div class="container">
+    <h1>LA GHIGLIOTTINA</h1>
 
+    <div class="game-area">
+      <div class="question" id="question"></div>
+      <div class="answers" id="answers"></div>
 
+      <div class="guess-box" id="guessBox">
+        <input type="text" placeholder="Scrivi qui il regalo" />
+        <br />
+        <button id="guessBtn">Scopri se hai indovinato!</button>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div>
+        <div class="money">Montepremi: <span id="money">100</span>€</div>
+        <ul id="correctList"></ul>
+      </div>
+      <div class="timer" id="timer">90</div>
+    </div>
+
+    <div class="final-message" id="finalMessage"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { text: "1) La mia città preferita:", answers: ["Fano", "Pesaro"], correct: "Pesaro" },
+      { text: "2) Le farfalle sono un insieme di:", answers: ["Insetti", "Ginnaste"], correct: "Ginnaste" },
+      { text: "3) 30 dì conta novembre, con april ...", answers: ["Settembre", "Giugno"], correct: "Settembre" },
+      { text: "4) La Nazionale Italiana di Calcio nel 2006 ha vinto i:", answers: ["Mondiali", "Europei"], correct: "Mondiali" },
+      { text: "5) Che tipo di ginnastica prevede lanci, prese e piramidi umane?", answers: ["Artistica", "Acrobatica"], correct: "Acrobatica" }
+    ];
+
+    let current = 0;
+    let money = 100;
+
+    const questionEl = document.getElementById('question');
+    const answersEl = document.getElementById('answers');
+    const moneyEl = document.getElementById('money');
+    const correctList = document.getElementById('correctList');
+    const timerEl = document.getElementById('timer');
+    const guessBox = document.getElementById('guessBox');
+    const finalMessage = document.getElementById('finalMessage');
+    const guessBtn = document.getElementById('guessBtn');
+
+    function loadQuestion() {
+      const q = questions[current];
+      questionEl.textContent = q.text;
+      answersEl.innerHTML = '';
+
+      q.answers.forEach(a => {
+        const div = document.createElement('div');
+        div.className = 'answer';
+        div.textContent = a;
+        div.onclick = () => selectAnswer(a, q.correct, div);
+        answersEl.appendChild(div);
+      });
+    }
+
+    function selectAnswer(answer, correct, element) {
+      if (answer === correct) {
+        element.classList.add('correct');
+      } else {
+        element.classList.add('wrong');
+        money = money / 2;
+        moneyEl.textContent = money;
+      }
+
+      const li = document.createElement('li');
+      li.textContent = correct;
+      correctList.appendChild(li);
+
+      document.querySelectorAll('.answer').forEach(a => a.style.pointerEvents = 'none');
+
+      setTimeout(() => {
+        current++;
+        if (current < questions.length) {
+          loadQuestion();
+        } else {
+          startTimer();
+        }
+      }, 700);
+    }
+
+    function startTimer() {
+      answersEl.style.display = 'none';
+      questionEl.textContent = 'Indovina il regalo finale';
+      guessBox.style.display = 'block';
+
+      let time = 90;
+      timerEl.style.display = 'block';
+      timerEl.textContent = time;
+
+      const interval = setInterval(() => {
+        time--;
+        timerEl.textContent = time;
+        if (time <= 0) {
+          clearInterval(interval);
+          showFinalMessage();
+        }
+      }, 1000);
+
+      guessBtn.onclick = () => {
+        clearInterval(interval);
+        showFinalMessage();
+      };
+    }
+
+    function showFinalMessage() {
+      finalMessage.style.display = 'block';
+      finalMessage.innerHTML = `Un contributo pari a <strong>${money}€</strong> all'acquisto di 1 biglietto per i <strong>Campionati del Mondo di Ginnastica Acrobatica</strong> (17–26 settembre a Pesaro)!`;
+    }
+
+    loadQuestion();
+  </script>
+</body>
 </html>
